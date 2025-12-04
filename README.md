@@ -15,3 +15,6 @@ SCRIPT :https://docs.google.com/document/d/1Rf8dUrCW5gZAGWmfgUYzt94DuNzfF4vZa7F2
 
 BOLETAS :https://docs.google.com/spreadsheets/d/159cNNBrgOPqKb9qwbvfL9XnWvmM5aY3HCPHqFO6-r4g/edit?gid=855327541#gid=855327541
 
+-----
+
+IDEF0 (Integration Definition for Function Modeling) :https://drive.google.com/file/d/18y7Hsi6p3gkKVWwtV-MJUxvtmS65MvNa/view?usp=sharing
