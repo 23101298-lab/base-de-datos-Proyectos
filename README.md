@@ -11,4 +11,7 @@ MCVS-UE-II-1-01 Gestión de Procesos de Negocios:https://docs.google.com/documen
 
 SCRIPT :https://docs.google.com/document/d/1Rf8dUrCW5gZAGWmfgUYzt94DuNzfF4vZa7F2k8__uRw/edit?tab=t.0
 
+------
+
+BOLETAS :https://docs.google.com/spreadsheets/d/159cNNBrgOPqKb9qwbvfL9XnWvmM5aY3HCPHqFO6-r4g/edit?gid=855327541#gid=855327541
 
