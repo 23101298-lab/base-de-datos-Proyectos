@@ -1,3 +1,4 @@
+```mermaid
 flowchart LR
   %% ====== ESTILO ======
   classDef centro fill:#111,stroke:#555,stroke-width:2,color:#fff,rx:18,ry:18;
@@ -52,3 +53,4 @@ flowchart LR
   M1 --> A0
   M2 --> A0
   M3 --> A0
+```
