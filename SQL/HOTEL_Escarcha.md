@@ -1,0 +1,445 @@
+```sql
+CREATE DATABASE HOTEL_Escarcha
+GO
+USE HOTEL_Escarcha
+GO
+
+-- =========================
+-- TABLAS PRINCIPALES
+-- =========================
+CREATE TABLE CLIENTE(
+  ID_Cliente INT IDENTITY(1,1) PRIMARY KEY,
+  nombre NVARCHAR(100),
+  apellidos NVARCHAR(100),
+  telefono NVARCHAR(20),
+  doc_cliente NVARCHAR(20),
+  direccion NVARCHAR(150)
+)
+GO
+
+CREATE TABLE EMPLEADO(
+  ID_Empleado INT IDENTITY(1,1) PRIMARY KEY,
+  nombre NVARCHAR(100),
+  doc_empleado NVARCHAR(20),
+  cargo NVARCHAR(50)
+)
+GO
+
+CREATE TABLE TIPO_HABITACION(
+  ID_Tipo INT IDENTITY(1,1) PRIMARY KEY,
+  descripcion_tipo_habitacion NVARCHAR(100),
+  precio_base DECIMAL(10,2)
+)
+GO
+
+CREATE TABLE HABITACION(
+  ID_Habitacion INT IDENTITY(1,1) PRIMARY KEY,
+  num_Habitacion NVARCHAR(10),
+  ID_Tipo INT,
+  estado_habitacion NVARCHAR(20),
+  FOREIGN KEY(ID_Tipo) REFERENCES TIPO_HABITACION(ID_Tipo)
+)
+GO
+
+CREATE TABLE SERVICIO(
+  ID_Servicio INT IDENTITY(1,1) PRIMARY KEY,
+  nombre_servicio NVARCHAR(80),
+  descripcion_servicio NVARCHAR(150),
+  precio DECIMAL(10,2)
+)
+GO
+
+CREATE TABLE MENU_RESTAURANTE(
+  ID_Plato INT IDENTITY(1,1) PRIMARY KEY,
+  nombre_plato NVARCHAR(100),
+  descripcion NVARCHAR(200),
+  precio DECIMAL(10,2),
+  categoria NVARCHAR(50)
+)
+GO
+
+CREATE TABLE SALON_EVENTO(
+  ID_Salon INT IDENTITY(1,1) PRIMARY KEY,
+  nombre_salon NVARCHAR(50),
+  capacidad INT,
+  ubicacion NVARCHAR(50),
+  estado_salon NVARCHAR(20),
+  precio_hora DECIMAL(10,2)
+)
+GO
+
+-- =========================
+-- PROMOCIONES
+-- =========================
+CREATE TABLE PROMOCION(
+  ID_Promocion INT IDENTITY(1,1) PRIMARY KEY,
+  nombre NVARCHAR(50),
+  descripcion NVARCHAR(150),
+  descuento_porcentaje DECIMAL(5,2),
+  fecha_inicio DATE,
+  fecha_fin DATE
+)
+GO
+
+CREATE TABLE PROMO_TIPO_HAB(
+  ID_PromoTipo INT IDENTITY(1,1) PRIMARY KEY,
+  ID_Promocion INT,
+  ID_Tipo INT,
+  FOREIGN KEY(ID_Promocion) REFERENCES PROMOCION(ID_Promocion),
+  FOREIGN KEY(ID_Tipo) REFERENCES TIPO_HABITACION(ID_Tipo)
+)
+GO
+
+CREATE TABLE PROMO_SERVICIO(
+  ID_PromoServ INT IDENTITY(1,1) PRIMARY KEY,
+  ID_Promocion INT,
+  ID_Servicio INT,
+  FOREIGN KEY(ID_Promocion) REFERENCES PROMOCION(ID_Promocion),
+  FOREIGN KEY(ID_Servicio)  REFERENCES SERVICIO(ID_Servicio)
+)
+GO
+
+CREATE TABLE PROMO_PLATO(
+  ID_PromoPlato INT IDENTITY(1,1) PRIMARY KEY,
+  ID_Promocion INT,
+  ID_Plato INT,
+  FOREIGN KEY(ID_Promocion) REFERENCES PROMOCION(ID_Promocion),
+  FOREIGN KEY(ID_Plato) REFERENCES MENU_RESTAURANTE(ID_Plato)
+)
+GO
+
+CREATE TABLE PROMO_SALON(
+  ID_PromoSalon INT IDENTITY(1,1) PRIMARY KEY,
+  ID_Promocion INT,
+  ID_Salon INT,
+  FOREIGN KEY(ID_Promocion) REFERENCES PROMOCION(ID_Promocion),
+  FOREIGN KEY(ID_Salon) REFERENCES SALON_EVENTO(ID_Salon)
+)
+GO
+
+-- =========================
+-- OPERACIÓN HOTELERA
+-- =========================
+CREATE TABLE RESERVA(
+  ID_Reserva INT IDENTITY(1,1) PRIMARY KEY,
+  ID_Cliente INT,
+  ID_Habitacion INT,
+  fecha_reserva DATETIME,
+  fecha_check_in DATE,
+  fecha_check_out DATE,
+  estado_reserva NVARCHAR(20),
+  FOREIGN KEY(ID_Cliente) REFERENCES CLIENTE(ID_Cliente),
+  FOREIGN KEY(ID_Habitacion) REFERENCES HABITACION(ID_Habitacion)
+)
+GO
+
+CREATE TABLE CHECK_IN_OUT(
+  ID_Check INT IDENTITY(1,1) PRIMARY KEY,
+  ID_Reserva INT,
+  ID_Empleado INT,
+  fecha_check_in DATETIME,
+  fecha_check_out DATETIME,
+  observaciones NVARCHAR(200),
+  FOREIGN KEY(ID_Reserva) REFERENCES RESERVA(ID_Reserva),
+  FOREIGN KEY(ID_Empleado) REFERENCES EMPLEADO(ID_Empleado)
+)
+GO
+
+CREATE TABLE ORDEN_VENTA(
+  ID_Orden INT IDENTITY(1,1) PRIMARY KEY,
+  ID_Cliente INT,
+  ID_Empleado INT,
+  fecha DATETIME,
+  FOREIGN KEY(ID_Cliente) REFERENCES CLIENTE(ID_Cliente),
+  FOREIGN KEY(ID_Empleado) REFERENCES EMPLEADO(ID_Empleado)
+)
+GO
+
+CREATE TABLE DET_ORDEN_VENTA(
+  ID_Detalle INT IDENTITY(1,1) PRIMARY KEY,
+  ID_Orden INT,
+  ID_Habitacion INT NULL,
+  ID_Servicio INT NULL,
+  cantidad INT,
+  precio_unit DECIMAL(10,2),
+  subtotal DECIMAL(10,2),
+  FOREIGN KEY(ID_Orden) REFERENCES ORDEN_VENTA(ID_Orden),
+  FOREIGN KEY(ID_Habitacion) REFERENCES HABITACION(ID_Habitacion),
+  FOREIGN KEY(ID_Servicio) REFERENCES SERVICIO(ID_Servicio)
+)
+GO
+
+CREATE TABLE DET_ORDEN_VENTA_MENU(
+  ID_DetalleMenu INT IDENTITY(1,1) PRIMARY KEY,
+  ID_Orden INT,
+  ID_Plato INT,
+  cantidad INT,
+  precio_unit DECIMAL(10,2),
+  subtotal DECIMAL(10,2),
+  FOREIGN KEY(ID_Orden) REFERENCES ORDEN_VENTA(ID_Orden),
+  FOREIGN KEY(ID_Plato) REFERENCES MENU_RESTAURANTE(ID_Plato)
+)
+GO
+
+CREATE TABLE PAGO(
+  ID_Pago INT IDENTITY(1,1) PRIMARY KEY,
+  ID_Orden INT,
+  monto DECIMAL(10,2),
+  fecha_pago DATETIME,
+  metodo_pago NVARCHAR(20),
+  estado NVARCHAR(20),
+  FOREIGN KEY(ID_Orden) REFERENCES ORDEN_VENTA(ID_Orden)
+)
+GO
+
+CREATE TABLE ORDEN_PROMOCION(
+  ID_OrdenPromo INT IDENTITY(1,1) PRIMARY KEY,
+  ID_Orden INT,
+  ID_Promocion INT,
+  monto_descuento DECIMAL(10,2),
+  FOREIGN KEY(ID_Orden) REFERENCES ORDEN_VENTA(ID_Orden),
+  FOREIGN KEY(ID_Promocion) REFERENCES PROMOCION(ID_Promocion)
+)
+GO
+
+CREATE TABLE HISTORIAL_HUESPED(
+  ID_Historial INT IDENTITY(1,1) PRIMARY KEY,
+  ID_Cliente INT,
+  ID_Habitacion INT,
+  fecha_check_in DATE,
+  fecha_check_out DATE,
+  motivo_visita NVARCHAR(50),
+  ID_Promocion INT NULL,
+  FOREIGN KEY(ID_Cliente) REFERENCES CLIENTE(ID_Cliente),
+  FOREIGN KEY(ID_Habitacion) REFERENCES HABITACION(ID_Habitacion),
+  FOREIGN KEY(ID_Promocion) REFERENCES PROMOCION(ID_Promocion)
+)
+GO
+
+CREATE TABLE RESERVA_SALON(
+  ID_ReservaSalon INT IDENTITY(1,1) PRIMARY KEY,
+  ID_Cliente INT,
+  ID_Salon INT,
+  ID_Empleado INT,
+  fecha_evento DATE,
+  hora_inicio TIME,
+  hora_fin TIME,
+  estado_reserva NVARCHAR(20),
+  observaciones NVARCHAR(255),
+  FOREIGN KEY(ID_Cliente) REFERENCES CLIENTE(ID_Cliente),
+  FOREIGN KEY(ID_Salon) REFERENCES SALON_EVENTO(ID_Salon),
+  FOREIGN KEY(ID_Empleado) REFERENCES EMPLEADO(ID_Empleado)
+)
+GO
+
+
+-- ACTIVOS / PROVEEDORES / INVENTARIO
+
+CREATE TABLE PROVEEDOR(
+  ID_Proveedor INT IDENTITY(1,1) PRIMARY KEY,
+  nombre NVARCHAR(100),
+  direccion NVARCHAR(100),
+  tel_contacto NVARCHAR(20),
+  email NVARCHAR(100),
+  servicio_o_producto NVARCHAR(50)
+)
+GO
+
+CREATE TABLE INVENTARIO(
+  ID_Item INT IDENTITY(1,1) PRIMARY KEY,
+  nombre_item NVARCHAR(100),
+  cantidad_actual INT,
+  umbral_minimo INT,
+  ubicacion NVARCHAR(50),
+  ID_Proveedor INT NULL,
+  FOREIGN KEY(ID_Proveedor) REFERENCES PROVEEDOR(ID_Proveedor)
+)
+GO
+
+CREATE TABLE ACTIVO_FIJO(
+  ID_Activo INT IDENTITY(1,1) PRIMARY KEY,
+  nombre_activo NVARCHAR(100),
+  tipo_activo NVARCHAR(50),
+  ID_Habitacion INT NULL,
+  ID_Salon INT NULL,
+  fecha_adquisicion DATE,
+  valor_compra DECIMAL(10,2),
+  estado_activo NVARCHAR(20),
+  ID_Proveedor INT NULL,
+  FOREIGN KEY(ID_Habitacion) REFERENCES HABITACION(ID_Habitacion),
+  FOREIGN KEY(ID_Salon) REFERENCES SALON_EVENTO(ID_Salon),
+  FOREIGN KEY(ID_Proveedor) REFERENCES PROVEEDOR(ID_Proveedor)
+)
+GO
+
+CREATE TABLE MANTENIMIENTO(
+  ID_Mantenimiento INT IDENTITY(1,1) PRIMARY KEY,
+  ID_Activo INT NULL,
+  ID_Habitacion INT NULL,
+  ID_Empleado INT,
+  fecha_solicitud DATETIME,
+  fecha_ejecucion DATETIME,
+  tipo_mantenimiento NVARCHAR(30),
+  descripcion NVARCHAR(MAX),
+  estado NVARCHAR(20),
+  FOREIGN KEY(ID_Activo) REFERENCES ACTIVO_FIJO(ID_Activo),
+  FOREIGN KEY(ID_Habitacion) REFERENCES HABITACION(ID_Habitacion),
+  FOREIGN KEY(ID_Empleado) REFERENCES EMPLEADO(ID_Empleado)
+)
+GO
+
+CREATE TABLE DET_MANTENIMIENTO_INVENTARIO(
+  ID_Detalle INT IDENTITY(1,1) PRIMARY KEY,
+  ID_Mantenimiento INT,
+  ID_Item INT,
+  cantidad_usada INT,
+  FOREIGN KEY(ID_Mantenimiento) REFERENCES MANTENIMIENTO(ID_Mantenimiento),
+  FOREIGN KEY(ID_Item) REFERENCES INVENTARIO(ID_Item)
+)
+GO
+
+CREATE TABLE PROVEEDOR_MENU(
+  ID_ProveedorMenu INT IDENTITY(1,1) PRIMARY KEY,
+  ID_Proveedor INT,
+  ID_Plato INT,
+  FOREIGN KEY(ID_Proveedor) REFERENCES PROVEEDOR(ID_Proveedor),
+  FOREIGN KEY(ID_Plato) REFERENCES MENU_RESTAURANTE(ID_Plato)
+)
+GO
+
+-- TABLAS NUEVAS DE APOYO
+
+-- COMPROBANTES
+CREATE TABLE COMPROBANTE(
+  ID_Comprobante INT IDENTITY(1,1) PRIMARY KEY,
+  tipo_comprobante CHAR(2),
+  serie NVARCHAR(4),
+  correlativo NVARCHAR(8),
+  fecha_emision DATETIME,
+  id_cliente INT,
+  doc_cliente NVARCHAR(20),
+  nombre_cliente NVARCHAR(150),
+  subtotal DECIMAL(10,2),
+  igv DECIMAL(10,2),
+  total DECIMAL(10,2),
+  moneda CHAR(3),
+  estado NVARCHAR(20),
+  FOREIGN KEY(id_cliente) REFERENCES CLIENTE(ID_Cliente)
+)
+GO
+
+CREATE TABLE COMPROBANTE_ORDEN(
+  ID_ComprobanteOrden INT IDENTITY(1,1) PRIMARY KEY,
+  ID_Comprobante INT,
+  ID_Orden INT,
+  FOREIGN KEY(ID_Comprobante) REFERENCES COMPROBANTE(ID_Comprobante),
+  FOREIGN KEY(ID_Orden) REFERENCES ORDEN_VENTA(ID_Orden)
+)
+GO
+
+CREATE TABLE DETALLE_COMPROBANTE(
+  ID_DetalleC INT IDENTITY(1,1) PRIMARY KEY,
+  ID_Comprobante INT,
+  descripcion NVARCHAR(200),
+  cantidad DECIMAL(10,2),
+  precio_unit DECIMAL(10,2),
+  descuento DECIMAL(10,2),
+  igv_item DECIMAL(10,2),
+  importe DECIMAL(10,2),
+  ID_Habitacion INT NULL,
+  ID_Servicio INT NULL,
+  ID_Plato INT NULL,
+  FOREIGN KEY(ID_Comprobante) REFERENCES COMPROBANTE(ID_Comprobante),
+  FOREIGN KEY(ID_Habitacion) REFERENCES HABITACION(ID_Habitacion),
+  FOREIGN KEY(ID_Servicio) REFERENCES SERVICIO(ID_Servicio),
+  FOREIGN KEY(ID_Plato) REFERENCES MENU_RESTAURANTE(ID_Plato)
+)
+GO
+
+-- MOVIMIENTOS DE INVENTARIO
+CREATE TABLE MOV_INVENTARIO(
+  ID_Mov INT IDENTITY(1,1) PRIMARY KEY,
+  ID_Item INT,
+  fecha_mov DATETIME,
+  tipo_mov CHAR(1),      -- 'E' entrada / 'S' salida
+  cantidad INT,
+  motivo NVARCHAR(80),
+  doc_ref NVARCHAR(40),
+  ID_Empleado INT,
+  FOREIGN KEY(ID_Item) REFERENCES INVENTARIO(ID_Item),
+  FOREIGN KEY(ID_Empleado) REFERENCES EMPLEADO(ID_Empleado)
+)
+GO
+
+-- ORDENES DE COMPRA
+CREATE TABLE OC(
+  ID_OC INT IDENTITY(1,1) PRIMARY KEY,
+  fecha DATETIME,
+  ID_Proveedor INT,
+  ID_Empleado INT,
+  estado NVARCHAR(20),
+  observaciones NVARCHAR(200),
+  FOREIGN KEY(ID_Proveedor) REFERENCES PROVEEDOR(ID_Proveedor),
+  FOREIGN KEY(ID_Empleado) REFERENCES EMPLEADO(ID_Empleado)
+)
+GO
+
+CREATE TABLE DET_OC(
+  ID_DetOC INT IDENTITY(1,1) PRIMARY KEY,
+  ID_OC INT,
+  ID_Item INT,
+  descripcion NVARCHAR(120),
+  cantidad INT,
+  precio_unit DECIMAL(10,2),
+  subtotal DECIMAL(10,2),
+  FOREIGN KEY(ID_OC) REFERENCES OC(ID_OC),
+  FOREIGN KEY(ID_Item) REFERENCES INVENTARIO(ID_Item)
+)
+GO
+
+-- TURNOS
+CREATE TABLE TURNO(
+  ID_Turno INT IDENTITY(1,1) PRIMARY KEY,
+  nombre NVARCHAR(40),
+  hora_inicio TIME,
+  hora_fin TIME,
+  activo BIT
+)
+GO
+
+CREATE TABLE ASIGNACION_TURNO(
+  ID_Asig INT IDENTITY(1,1) PRIMARY KEY,
+  ID_Empleado INT,
+  ID_Turno INT,
+  fecha DATE,
+  area NVARCHAR(40),
+  FOREIGN KEY(ID_Empleado) REFERENCES EMPLEADO(ID_Empleado),
+  FOREIGN KEY(ID_Turno) REFERENCES TURNO(ID_Turno)
+)
+GO
+
+-- COMANDAS 
+CREATE TABLE COMANDA(
+  ID_Comanda INT IDENTITY(1,1) PRIMARY KEY,
+  ID_Orden INT,
+  fecha DATETIME,
+  estado NVARCHAR(20),
+  observaciones NVARCHAR(200),
+  FOREIGN KEY(ID_Orden) REFERENCES ORDEN_VENTA(ID_Orden)
+)
+GO
+
+CREATE TABLE DET_COMANDA(
+  ID_DetComanda INT IDENTITY(1,1) PRIMARY KEY,
+  ID_Comanda INT,
+  ID_Plato INT,
+  cantidad INT,
+  observacion NVARCHAR(150),
+  FOREIGN KEY(ID_Comanda) REFERENCES COMANDA(ID_Comanda),
+  FOREIGN KEY(ID_Plato) REFERENCES MENU_RESTAURANTE(ID_Plato)
+)
+GO
+
+
+
+```
