@@ -54,3 +54,41 @@ flowchart LR
   M2 --> A0
   M3 --> A0
 ```
+-----
+```mermaid
+flowchart LR
+  classDef centro fill:#111,stroke:#555,stroke-width:2,color:#fff,rx:18,ry:18;
+  classDef tag fill:#0b1324,stroke:#0b1324,color:#cbd5e1;
+
+  A0["Prestar servicio de hospitalidad"]:::centro
+
+  %% Inputs (columna izquierda)
+  I1["Solicitud de reserva"]:::tag --> A0
+  I2["Solicitud de disponibilidad"]:::tag --> A0
+  I3["Datos del cliente"]:::tag --> A0
+  I4["Fechas solicitadas"]:::tag --> A0
+  I5["Tipo de habitación requerida"]:::tag --> A0
+  I6["Requerimientos de evento"]:::tag --> A0
+
+  %% Controles (arriba)
+  C1["Tarifas/IGV"]:::tag --> A0
+  C2["Políticas del hotel"]:::tag --> A0
+  C3["Política de cancelación"]:::tag --> A0
+  C4["Reglas de promociones"]:::tag --> A0
+  C5["Disponibilidad del sistema"]:::tag --> A0
+
+  %% Outputs (derecha)
+  A0 --> O1["Reserva confirmada"]:::tag
+  A0 --> O2["Ficha de check-in"]:::tag
+  A0 --> O3["Comprobante fiscal (boleta/factura)"]:::tag
+  A0 --> O4["Reportes: ocupabilidad, ventas, promos"]:::tag
+  A0 --> O5["Historial de huésped"]:::tag
+  A0 --> O6["Contrato/Cotización de evento"]:::tag
+
+  %% Mechanisms (abajo)
+  M1["Personal"]:::tag --> A0
+  M2["BD HOTEL_Escarcha"]:::tag --> A0
+  M3["Sistema de reservas"]:::tag --> A0
+  M4["Sistema de facturación"]:::tag --> A0
+  M5["Infraestructura y almacén"]:::tag --> A0
+```
