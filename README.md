@@ -18,3 +18,8 @@ BOLETAS :https://docs.google.com/spreadsheets/d/159cNNBrgOPqKb9qwbvfL9XnWvmM5aY3
 -----
 
 IDEF0 (Integration Definition for Function Modeling) :https://drive.google.com/file/d/18y7Hsi6p3gkKVWwtV-MJUxvtmS65MvNa/view?usp=sharing
+
+
+-----
+
+DIAGRAMA ENTIDAD-RELACION: https://miro.com/welcomeonboard/NGEvbzZRbmduVWdiNG1FNWkwTmRNMkRrQ1N2ZEo4dXBud2NDV3hTaHZ1SHJlajFpODdzc09iQnoxb0V2MUZEQXFaanhjcVBMeWJEZXAxVzJFdXh3Y3VpTXlkMnIrbmVhM3VuRVVYeDZtRm9TekdVenpwcGU3MThXNGc3dmdOWWRnbHpza3F6REdEcmNpNEFOMmJXWXBBPT0hdjE=?share_link_id=707531201680 
