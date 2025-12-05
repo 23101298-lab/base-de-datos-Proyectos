@@ -1,130 +1,61 @@
 ```mermaid
 flowchart LR
-  %% =========================
-  %% MACRO FLUJO - HOTEL ESCARCHA (G)
-  %% =========================
-
-  %% --- LAYOUT
-  classDef title fill:#111,stroke:#444,color:#fff;
-  classDef good fill:#0b1324,stroke:#0b1324,color:#cbd5e1,rx:8,ry:8;
-  classDef action fill:#18212f,stroke:#334155,color:#e2e8f0,rx:6,ry:6;
-  classDef decision fill:#0f172a,stroke:#64748b,color:#fff,rx:6,ry:6;
-  classDef data fill:#0b1324,stroke:#0ea5e9,color:#e0f2fe,rx:6,ry:6;
 
   %% ============ ACTORES / CONTEXTO ============
-  subgraph C [Cliente]
+  subgraph Cliente
     direction TB
     C0([Inicio])
-    C1[/"Solicitud de reserva"/]:::data
-    C2[/Datos del cliente/]:::data
+    C1([Solicitud de reserva])
+    C2([Datos del cliente])
   end
 
-  subgraph FD [Front Desk / Recepción]
+  subgraph Recepcion
     direction TB
-    R1[Validar disponibilidad]:::action
-    R2{¿Hay cupo?}:::decision
-    R3[Registrar RESERVA]:::action
-    R4[Enviar confirmación (voucher)]:::action
-    R5[Registrar CHECK-IN]:::action
-    R6[Registrar CHECK-OUT]:::action
+    R1([Validar disponibilidad])
+    R2{¿Hay cupo?}
+    R3([Registrar RESERVA])
+    R4([Enviar confirmación])
+    R5([Registrar CHECK-IN])
+    R6([Registrar CHECK-OUT])
   end
 
-  subgraph OPS [Operación de Alojamiento]
+  subgraph Alojamiento
     direction TB
-    A1[Asignar habitación]:::action
-    A2[Atender huésped / Room-service]:::action
-    A3[Generar cargos de alojamiento]:::action
+    A1([Asignar habitación])
+    A2([Atender huésped / Room-service])
+    A3([Generar cargos de alojamiento])
   end
 
-  subgraph REST [Restaurante / Bar]
+  subgraph Restaurante
     direction TB
-    B1[Tomar COMANDA]:::action
-    B2[Preparar y entregar pedido]:::action
-    B3[Generar cargos restaurante]:::action
+    B1([Tomar COMANDA])
+    B2([Preparar y entregar pedido])
+    B3([Generar cargos de restaurante])
   end
 
-  subgraph EVT [Eventos y Salones]
+  subgraph Eventos
     direction TB
-    E1[Programar evento / RESERVA_SALON]:::action
-    E2[Montaje y atención]:::action
-    E3[Generar cargos de evento]:::action
+    E1([Programar evento / Reserva salón])
+    E2([Montaje y atención])
+    E3([Generar cargos de evento])
   end
 
-  subgraph CAJA [Facturación y Cobro]
+  subgraph Facturacion
     direction TB
-    F0[[Acumular cargos → ORDEN_VENTA]]:::action
-    F1{¿Aplica PROMOCIÓN?}:::decision
-    F2[Calcular descuento (ORDEN_PROMOCION)]:::action
-    F3[Emitir COMPROBANTE (Boleta/Factura)]:::action
-    F4{¿Pago aprobado?}:::decision
-    F5[Registrar PAGO (POS/EFECTIVO)]:::action
-    F6([Entregar voucher / factura]):::action
+    F0([Acumular cargos → ORDEN_VENTA])
+    F1{¿Aplica promoción?}
+    F2([Calcular descuento])
+    F3([Emitir comprobante])
+    F4{¿Pago aprobado?}
+    F5([Registrar pago])
+    F6([Entregar voucher/factura])
   end
 
-  subgraph INV [Inventario / Compras / Mantenimiento]
+  subgraph Inventario
     direction TB
-    I1[Salida insumos (MOV_INVENTARIO S)]:::action
-    I2{¿Reposición requerida?}:::decision
-    I3[Orden de Compra (OC/DET_OC)]:::action
-    I4[Entrada a almacén (MOV_INVENTARIO E)]:::action
-    I5[OT de Mantenimiento]:::action
-  end
-
-  subgraph REP [Reportes / Control]
-    direction TB
-    X1([Ocupabilidad]):::data
-    X2([Ventas por fuente]):::data
-    X3([Kardex / Stock]):::data
-    X4([Historial huésped]):::data
-  end
-
-  %% ============ FLUJOS PRINCIPALES ============
-  C0 --> C1 --> C2 --> R1
-  R1 --> R2
-  R2 -- "No" --> C0
-  R2 -- "Sí" --> R3 --> R4 --> R5
-
-  R5 --> A1 --> A2 --> A3
-  A3 --> F0
-
-  %% Restaurante y eventos en paralelo
-  R5 -. consumo .-> B1
-  B1 --> B2 --> B3 --> F0
-
-  R5 -. servicios .-> E1
-  E1 --> E2 --> E3 --> F0
-
-  %% Check-out dispara facturación
-  R6 --> F0
-
-  %% Promociones y cobro
-  F0 --> F1
-  F1 -- "Sí" --> F2 --> F3
-  F1 -- "No" --> F3
-  F3 --> F4
-  F4 -- "Aprobado" --> F5 --> F6
-  F4 -- "Rechazado" --> F3
-
-  %% Inventario ligado a consumos
-  B2 --> I1
-  I1 --> I2
-  I2 -- "Sí" --> I3 --> I4
-  I2 -- "No" --> I5
-
-  %% Salidas a reportes
-  R3 --> X1
-  R5 --> X1
-  F3 --> X2
-  I1 --> X3
-  I4 --> X3
-  R6 --> X4
-
-  %% Estilos
-  class C,FD,OPS,REST,EVT,CAJA,INV,REP title
-  class R1,R3,R4,R5,R6,A1,A2,A3,B1,B2,B3,E1,E2,E3,F0,F2,F3,F5,I1,I3,I4,I5 action
-  class R2,F1,F4,I2 decision
-  class C1,C2,X1,X2,X3,X4 data
-
+    I1([Salida de insumos])
+    I2{¿Reposición requerida?}
+    I3([Ord]()
 
 ```
 -----
