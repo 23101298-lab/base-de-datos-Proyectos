@@ -111,3 +111,26 @@ flowchart LR
   M1["BD RESERVA/HABITACION"]:::tag --> A11
 
 ```
+------
+```mermaid
+flowchart LR
+  classDef caja fill:#111,stroke:#555,stroke-width:2,color:#fff,rx:12,ry:12,font-size:14px;
+
+  %% BLOQUES A1–A7
+  A1["A1 Gestionar Reservas"]:::caja
+  A2["A2 Realizar Check-in / Check-out"]:::caja
+  A3["A3 Prestar Alojamiento y Servicios"]:::caja
+
+  A4["A4 Operar Restaurante / Bar"]:::caja
+  A5["A5 Gestionar Eventos y Salones"]:::caja
+
+  A6["A6 Facturar y Cobrar"]:::caja
+  A7["A7 Abastecimiento, Inventario y Mantenimiento"]:::caja
+
+  %% FLUJO PRINCIPAL
+  A1 --> A2 --> A3 --> A6 --> A7
+
+  %% SUBPROCESOS RELACIONADOS
+  A2 --> A4 --> A6
+  A2 --> A5 --> A6
+```
