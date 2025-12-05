@@ -137,7 +137,6 @@ flowchart LR
 -----
 ```mermaid
 
-
 %% A0 – Prestar un buen servicio de hospitalidad (A1…A7 + I,C,O,M)
 flowchart LR
   classDef f fill:#0b1324,stroke:#3b4454,stroke-width:1.2,color:#fff,rx:10,ry:10,font-size:12px;
