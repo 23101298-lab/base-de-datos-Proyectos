@@ -92,3 +92,22 @@ flowchart LR
   M4["Sistema de facturación"]:::tag --> A0
   M5["Infraestructura y almacén"]:::tag --> A0
 ```
+----
+```mermaid
+flowchart LR
+  classDef caja fill:#111,stroke:#555,stroke-width:2,color:#fff,rx:12,ry:12;
+  classDef tag fill:#0b1324,stroke:#0b1324,color:#cbd5e1;
+
+  subgraph A1["A1 Gestionar Reservas"]
+  direction LR
+    A11["A11 Verificar disponibilidad"]:::caja --> A12["A12 Cotizar y aplicar promociones"]:::caja --> A13["A13 Registrar/confirmar reserva"]:::caja --> A14["A14 Notificar y actualizar disponibilidad"]:::caja
+  end
+
+  %% ICOM
+  I1["Fechas solicitadas"]:::tag --> A11
+  I2["Tipo de habitación"]:::tag --> A11
+  C1["Políticas/IGV/Promos"]:::tag --> A12
+  A13 --> O1["Voucher de reserva"]:::tag
+  M1["BD RESERVA/HABITACION"]:::tag --> A11
+
+```
