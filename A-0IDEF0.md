@@ -2,7 +2,6 @@
 flowchart LR
   %% =========================
   %% MACRO FLUJO - HOTEL ESCARCHA (G)
-  %% Listo para GitHub (Mermaid)
   %% =========================
 
   %% --- LAYOUT
@@ -13,14 +12,14 @@ flowchart LR
   classDef data fill:#0b1324,stroke:#0ea5e9,color:#e0f2fe,rx:6,ry:6;
 
   %% ============ ACTORES / CONTEXTO ============
-  subgraph C[Cliente]
+  subgraph C [Cliente]
     direction TB
     C0([Inicio])
     C1[/"Solicitud de reserva"/]:::data
     C2[/Datos del cliente/]:::data
   end
 
-  subgraph FD[Front Desk / Recepción]
+  subgraph FD [Front Desk / Recepción]
     direction TB
     R1[Validar disponibilidad]:::action
     R2{¿Hay cupo?}:::decision
@@ -30,28 +29,28 @@ flowchart LR
     R6[Registrar CHECK-OUT]:::action
   end
 
-  subgraph OPS[Operación de Alojamiento]
+  subgraph OPS [Operación de Alojamiento]
     direction TB
     A1[Asignar habitación]:::action
     A2[Atender huésped / Room-service]:::action
     A3[Generar cargos de alojamiento]:::action
   end
 
-  subgraph REST[Restaurante / Bar]
+  subgraph REST [Restaurante / Bar]
     direction TB
     B1[Tomar COMANDA]:::action
     B2[Preparar y entregar pedido]:::action
     B3[Generar cargos restaurante]:::action
   end
 
-  subgraph EVT[Eventos y Salones]
+  subgraph EVT [Eventos y Salones]
     direction TB
     E1[Programar evento / RESERVA_SALON]:::action
     E2[Montaje y atención]:::action
     E3[Generar cargos de evento]:::action
   end
 
-  subgraph CAJA[Facturación y Cobro]
+  subgraph CAJA [Facturación y Cobro]
     direction TB
     F0[[Acumular cargos → ORDEN_VENTA]]:::action
     F1{¿Aplica PROMOCIÓN?}:::decision
@@ -62,7 +61,7 @@ flowchart LR
     F6([Entregar voucher / factura]):::action
   end
 
-  subgraph INV[Inventario / Compras / Mantenimiento]
+  subgraph INV [Inventario / Compras / Mantenimiento]
     direction TB
     I1[Salida insumos (MOV_INVENTARIO S)]:::action
     I2{¿Reposición requerida?}:::decision
@@ -71,7 +70,7 @@ flowchart LR
     I5[OT de Mantenimiento]:::action
   end
 
-  subgraph REP[Reportes / Control]
+  subgraph REP [Reportes / Control]
     direction TB
     X1([Ocupabilidad]):::data
     X2([Ventas por fuente]):::data
@@ -88,13 +87,14 @@ flowchart LR
   R5 --> A1 --> A2 --> A3
   A3 --> F0
 
-  %% Restaurante y eventos pueden ocurrir en paralelo
-  R5 -. consumo .-> REST
+  %% Restaurante y eventos en paralelo
+  R5 -. consumo .-> B1
   B1 --> B2 --> B3 --> F0
-  R5 -. servicios .-> EVT
+
+  R5 -. servicios .-> E1
   E1 --> E2 --> E3 --> F0
 
-  %% Check-out cierra la estadía y dispara facturación
+  %% Check-out dispara facturación
   R6 --> F0
 
   %% Promociones y cobro
@@ -115,7 +115,8 @@ flowchart LR
   R3 --> X1
   R5 --> X1
   F3 --> X2
-  I1 & I4 --> X3
+  I1 --> X3
+  I4 --> X3
   R6 --> X4
 
   %% Estilos
@@ -123,6 +124,7 @@ flowchart LR
   class R1,R3,R4,R5,R6,A1,A2,A3,B1,B2,B3,E1,E2,E3,F0,F2,F3,F5,I1,I3,I4,I5 action
   class R2,F1,F4,I2 decision
   class C1,C2,X1,X2,X3,X4 data
+
 
 ```
 -----
