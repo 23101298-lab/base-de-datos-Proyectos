@@ -23,3 +23,8 @@ IDEF0 (Integration Definition for Function Modeling) :https://drive.google.com/f
 -----
 
 DIAGRAMA ENTIDAD-RELACION: https://miro.com/welcomeonboard/NGEvbzZRbmduVWdiNG1FNWkwTmRNMkRrQ1N2ZEo4dXBud2NDV3hTaHZ1SHJlajFpODdzc09iQnoxb0V2MUZEQXFaanhjcVBMeWJEZXAxVzJFdXh3Y3VpTXlkMnIrbmVhM3VuRVVYeDZtRm9TekdVenpwcGU3MThXNGc3dmdOWWRnbHpza3F6REdEcmNpNEFOMmJXWXBBPT0hdjE=?share_link_id=707531201680 
+
+
+-----
+
+ppt:https://www.canva.com/design/DAG6nlWrxLI/BKMIIEl1sGmWSGGaPiJ1Lg/edit?utm_content=DAG6nlWrxLI&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton 
