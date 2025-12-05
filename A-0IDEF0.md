@@ -1,100 +1,108 @@
 ```mermaid
 flowchart LR
+  %% ==========================================
+  %% HOTEL ESCARCHA - MACRO FLUJO (GITHUB SAFE)
+  %% ==========================================
 
-  %% ============ ACTORES / CONTEXTO ============
-  subgraph Cliente
-    direction TB
-    C0([Inicio])
-    C1([Solicitud de reserva])
-    C2([Datos del cliente])
+  %% Actores / contexto
+  subgraph C0 ["Cliente"]
+    C1["Inicio"]
+    C2["Solicitud de reserva"]
+    C3["Datos del cliente"]
   end
 
-  subgraph Recepcion
-    direction TB
-    R1([Validar disponibilidad])
-    R2{¿Hay cupo?}
-    R3([Registrar RESERVA])
-    R4([Enviar confirmación])
-    R5([Registrar CHECK-IN])
-    R6([Registrar CHECK-OUT])
+  subgraph FD ["Front Desk / Recepción"]
+    R1["Validar disponibilidad"]
+    R2{"¿Hay cupo?"}
+    R3["Registrar RESERVA"]
+    R4["Enviar confirmación (voucher)"]
+    R5["Registrar CHECK-IN"]
+    R6["Registrar CHECK-OUT"]
   end
 
-  subgraph Alojamiento
-    direction TB
-    A1([Asignar habitación])
-    A2([Atender huésped / Room-service])
-    A3([Generar cargos de alojamiento])
+  subgraph OPS ["Operación de Alojamiento"]
+    A1["Asignar habitación"]
+    A2["Atender huésped / Room service"]
+    A3["Generar cargos de alojamiento"]
   end
 
-  subgraph Restaurante
-    direction TB
-    B1([Tomar COMANDA])
-    B2([Preparar y entregar pedido])
-    B3([Generar cargos de restaurante])
+  subgraph REST ["Restaurante / Bar"]
+    B1["Tomar COMANDA"]
+    B2["Preparar y entregar pedido"]
+    B3["Generar cargos de restaurante"]
   end
 
-  subgraph Eventos
-    direction TB
-    E1([Programar evento / Reserva salón])
-    E2([Montaje y atención])
-    E3([Generar cargos de evento])
+  subgraph EVT ["Eventos y Salones"]
+    E1["Programar evento (RESERVA_SALON)"]
+    E2["Montaje y atención"]
+    E3["Generar cargos de evento"]
   end
 
-  subgraph Facturacion
-    direction TB
-    F0([Acumular cargos → ORDEN_VENTA])
-    F1{¿Aplica promoción?}
-    F2([Calcular descuento])
-    F3([Emitir comprobante])
-    F4{¿Pago aprobado?}
-    F5([Registrar pago])
-    F6([Entregar voucher/factura])
+  subgraph CAJA ["Facturación y Cobro"]
+    F0["Acumular cargos → ORDEN_VENTA"]
+    F1{"¿Aplica PROMOCIÓN?"}
+    F2["Calcular descuento (ORDEN_PROMOCION)"]
+    F3["Emitir COMPROBANTE (Boleta/Factura)"]
+    F4{"¿Pago aprobado?"}
+    F5["Registrar PAGO (POS/Efectivo)"]
+    F6["Entregar voucher / factura"]
   end
 
-  subgraph Inventario
-    direction TB
-    I1([Salida de insumos])
-    I2{¿Reposición requerida?}
-    I3([Ord]()
+  subgraph INV ["Inventario / Compras / Mantenimiento"]
+    I1["Salida de insumos (MOV_INVENTARIO S)"]
+    I2{"¿Reposición requerida?"}
+    I3["Orden de Compra (OC / DET_OC)"]
+    I4["Entrada a almacén (MOV_INVENTARIO E)"]
+    I5["Orden de Trabajo de Mantenimiento"]
+  end
 
-```
------
-```mermaid
-flowchart LR
-  classDef centro fill:#111,stroke:#555,stroke-width:2,color:#fff,rx:18,ry:18;
-  classDef tag fill:#0b1324,stroke:#0b1324,color:#cbd5e1;
+  subgraph REP ["Reportes / Control"]
+    X1["Reporte de Ocupabilidad"]
+    X2["Reporte de Ventas por fuente"]
+    X3["Kardex / Stock"]
+    X4["Historial del huésped"]
+  end
 
-  A0["Prestar servicio de hospitalidad"]:::centro
+  %% Flujos principales
+  C1 --> C2 --> C3 --> R1
+  R1 --> R2
+  R2 -- "No" --> C1
+  R2 -- "Sí" --> R3 --> R4 --> R5
 
-  %% Inputs (columna izquierda)
-  I1["Solicitud de reserva"]:::tag --> A0
-  I2["Solicitud de disponibilidad"]:::tag --> A0
-  I3["Datos del cliente"]:::tag --> A0
-  I4["Fechas solicitadas"]:::tag --> A0
-  I5["Tipo de habitación requerida"]:::tag --> A0
-  I6["Requerimientos de evento"]:::tag --> A0
+  R5 --> A1 --> A2 --> A3 --> F0
 
-  %% Controles (arriba)
-  C1["Tarifas/IGV"]:::tag --> A0
-  C2["Políticas del hotel"]:::tag --> A0
-  C3["Política de cancelación"]:::tag --> A0
-  C4["Reglas de promociones"]:::tag --> A0
-  C5["Disponibilidad del sistema"]:::tag --> A0
+  %% Restaurante y eventos (paralelo)
+  R5 -. consumo .-> B1
+  B1 --> B2 --> B3 --> F0
 
-  %% Outputs (derecha)
-  A0 --> O1["Reserva confirmada"]:::tag
-  A0 --> O2["Ficha de check-in"]:::tag
-  A0 --> O3["Comprobante fiscal (boleta/factura)"]:::tag
-  A0 --> O4["Reportes: ocupabilidad, ventas, promos"]:::tag
-  A0 --> O5["Historial de huésped"]:::tag
-  A0 --> O6["Contrato/Cotización de evento"]:::tag
+  R5 -. servicios .-> E1
+  E1 --> E2 --> E3 --> F0
 
-  %% Mechanisms (abajo)
-  M1["Personal"]:::tag --> A0
-  M2["BD HOTEL_Escarcha"]:::tag --> A0
-  M3["Sistema de reservas"]:::tag --> A0
-  M4["Sistema de facturación"]:::tag --> A0
-  M5["Infraestructura y almacén"]:::tag --> A0
+  %% Check-out dispara cierre
+  R6 --> F0
+
+  %% Promociones y cobro
+  F0 --> F1
+  F1 -- "Sí" --> F2 --> F3
+  F1 -- "No" --> F3
+  F3 --> F4
+  F4 -- "Aprobado" --> F5 --> F6
+  F4 -- "Rechazado" --> F3
+
+  %% Inventario ligado a consumos
+  B2 --> I1
+  I1 --> I2
+  I2 -- "Sí" --> I3 --> I4
+  I2 -- "No" --> I5
+
+  %% Salidas a reportes
+  R3 --> X1
+  R5 --> X1
+  F3 --> X2
+  I1 --> X3
+  I4 --> X3
+  R6 --> X4
+
 ```
 ----
 ```mermaid
